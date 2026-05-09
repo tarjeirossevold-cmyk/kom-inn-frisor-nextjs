@@ -2,53 +2,50 @@ import { useState } from 'react'
 import Head from 'next/head'
 
 export default function Home() {
-  const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    email: '',
-    service: '',
-    date: '',
-    time: '',
-    message: ''
-  })
+  const [selectedDate, setSelectedDate] = useState(null)
+  const [selectedTime, setSelectedTime] = useState(null)
+  const [selectedService, setSelectedService] = useState(null)
+  const [showBookingModal, setShowBookingModal] = useState(false)
 
   const services = [
-    { name: 'Dameklipp', price: '550,-', duration: '45 min' },
-    { name: 'Herreklipp', price: '450,-', duration: '30 min' },
-    { name: 'Barneklipp (under 12 år)', price: '350,-', duration: '30 min' },
-    { name: 'Farge - hel', price: 'fra 750,-', duration: '90 min' },
-    { name: 'Farge - utv', price: 'fra 650,-', duration: '60 min' },
-    { name: 'Striper', price: 'fra 850,-', duration: '120 min' },
-    { name: 'Balayage', price: 'fra 1200,-', duration: '150 min' },
-    { name: 'Permanent', price: 'fra 900,-', duration: '120 min' },
-    { name: 'Styling/Føning', price: '400,-', duration: '30 min' },
-    { name: 'Bryllupsstyling', price: 'fra 800,-', duration: '60 min' }
+    { id: 1, name: 'Dameklipp', price: '550,-', duration: '45 min', image: 'https://images.unsplash.com/photo-1562322140-8baeececf3df?w=600' },
+    { id: 2, name: 'Herreklipp', price: '450,-', duration: '30 min', image: 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600' },
+    { id: 3, name: 'Barneklipp', price: '350,-', duration: '30 min', image: 'https://images.unsplash.com/photo-1632345031435-8727f6897d53?w=600' },
+    { id: 4, name: 'Farge - hel', price: 'fra 750,-', duration: '90 min', image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600' },
+    { id: 5, name: 'Balayage', price: 'fra 1200,-', duration: '150 min', image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600' },
+    { id: 6, name: 'Permanent', price: 'fra 900,-', duration: '120 min', image: 'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=600' }
   ]
 
-  const reviews = [
-    {
-      text: 'Fantastisk service og resultat! Anbefales på det sterkeste.',
-      author: 'Fornøyd kunde'
-    },
-    {
-      text: 'Veldig dyktige frisører. Kommer alltid tilbake hit.',
-      author: 'Fornøyd kunde'
-    },
-    {
-      text: 'Beste frisørsalongen i Bergen! Hyggelig personale.',
-      author: 'Fornøyd kunde'
-    }
+  const timeSlots = [
+    { time: '09:00', available: true },
+    { time: '09:30', available: false },
+    { time: '10:00', available: true },
+    { time: '10:30', available: true },
+    { time: '11:00', available: false },
+    { time: '11:30', available: true },
+    { time: '12:00', available: true },
+    { time: '13:00', available: true },
+    { time: '13:30', available: false },
+    { time: '14:00', available: true },
+    { time: '14:30', available: true },
+    { time: '15:00', available: true },
+    { time: '15:30', available: false },
+    { time: '16:00', available: true },
+    { time: '16:30', available: true },
+    { time: '17:00', available: true }
   ]
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    alert('Takk for din bestilling! Vi kontakter deg snart for bekreftelse.')
+  const handleBooking = (service) => {
+    setSelectedService(service)
+    setShowBookingModal(true)
   }
 
-  const scrollToSection = (sectionId) => {
-    const element = document.getElementById(sectionId)
-    if (element) {
-      element.scrollIntoView({ behavior: 'auto' })
+  const confirmBooking = () => {
+    if (selectedDate && selectedTime && selectedService) {
+      alert(`Bestilling bekreftet!\n\nTjeneste: ${selectedService.name}\nDato: ${selectedDate}\nTidspunkt: ${selectedTime}\n\nVi sender deg en bekreftelse på e-post.`)
+      setShowBookingModal(false)
+      setSelectedDate(null)
+      setSelectedTime(null)
     }
   }
 
@@ -60,650 +57,523 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {/* Watermark - Fixed and visible */}
+      {/* DEMO Watermark */}
       <div style={{
         position: 'fixed',
-        bottom: '30px',
-        right: '30px',
-        background: 'rgba(0, 0, 0, 0.85)',
+        bottom: '20px',
+        right: '20px',
+        background: 'rgba(0,0,0,0.9)',
         color: 'white',
-        padding: '12px 24px',
-        borderRadius: '6px',
-        fontSize: '14px',
+        padding: '10px 20px',
+        borderRadius: '4px',
+        fontSize: '13px',
         fontWeight: 'bold',
         zIndex: 10000,
-        fontFamily: 'Arial, sans-serif',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
-        letterSpacing: '2px'
+        letterSpacing: '1px',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
       }}>
         DEMO
       </div>
 
-      {/* Navigation */}
+      {/* Navigation - NO AUTO SCROLL */}
       <nav style={{
         position: 'sticky',
         top: 0,
-        background: '#2c3e50',
-        padding: '1rem 2rem',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-        zIndex: 100
+        background: '#1a1a1a',
+        padding: '1rem 0',
+        zIndex: 100,
+        borderBottom: '1px solid #333'
       }}>
         <div style={{
-          maxWidth: '1200px',
+          maxWidth: '1400px',
           margin: '0 auto',
+          padding: '0 2rem',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center'
         }}>
           <h1 style={{
-            color: '#ecf0f1',
+            color: '#fff',
             margin: 0,
             fontSize: '1.5rem',
-            fontFamily: 'Georgia, serif'
-          }}>
-            Kom Inn Frisør AS
-          </h1>
+            fontWeight: '300',
+            letterSpacing: '2px'
+          }}>KOM INN FRISØR</h1>
           <div style={{ display: 'flex', gap: '2rem' }}>
-            {['hjem', 'om-oss', 'tjenester', 'bestill', 'anmeldelser', 'kontakt'].map(section => (
-              <button
-                key={section}
-                onClick={() => scrollToSection(section)}
+            {['Hjem', 'Tjenester', 'Bestill', 'Kontakt'].map(item => (
+              <a
+                key={item}
+                href={`#${item.toLowerCase()}`}
                 style={{
-                  background: 'none',
-                  border: 'none',
-                  color: '#ecf0f1',
-                  cursor: 'pointer',
-                  fontSize: '1rem',
-                  textTransform: 'capitalize',
-                  padding: '0.5rem',
-                  transition: 'color 0.3s'
+                  color: '#ddd',
+                  textDecoration: 'none',
+                  fontSize: '0.95rem',
+                  letterSpacing: '1px',
+                  transition: 'color 0.2s'
                 }}
-                onMouseOver={(e) => e.target.style.color = '#3498db'}
-                onMouseOut={(e) => e.target.style.color = '#ecf0f1'}
+                onMouseOver={(e) => e.target.style.color = '#fff'}
+                onMouseOut={(e) => e.target.style.color = '#ddd'}
               >
-                {section === 'om-oss' ? 'Om oss' : section.replace('-', ' ')}
-              </button>
+                {item}
+              </a>
             ))}
           </div>
         </div>
       </nav>
 
-      {/* Hero Section */}
+      {/* Hero */}
       <section id="hjem" style={{
+        background: 'linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%)',
         padding: '6rem 2rem',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        color: 'white',
-        textAlign: 'center'
+        color: '#fff'
       }}>
-        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+        <div style={{ maxWidth: '1400px', margin: '0 auto', textAlign: 'center' }}>
           <h2 style={{
-            fontSize: '3rem',
+            fontSize: '3.5rem',
+            fontWeight: '200',
             marginBottom: '1rem',
-            fontFamily: 'Georgia, serif'
-          }}>
-            Velkommen til Kom Inn Frisør AS
-          </h2>
+            letterSpacing: '3px'
+          }}>Velkommen til Kom Inn Frisør AS</h2>
           <p style={{
             fontSize: '1.3rem',
-            lineHeight: '1.6',
-            marginBottom: '2rem'
-          }}>
-            Din profesjonelle frisørsalong i Bergen sentrum
-          </p>
+            color: '#ccc',
+            marginBottom: '2rem',
+            fontWeight: '300'
+          }}>Din profesjonelle frisørsalong i Bergen sentrum</p>
           <button
-            onClick={() => scrollToSection('bestill')}
+            onClick={() => document.getElementById('bestill').scrollIntoView()}
             style={{
-              background: 'white',
-              color: '#667eea',
-              padding: '1rem 2.5rem',
+              background: '#fff',
+              color: '#1a1a1a',
+              padding: '1rem 3rem',
               border: 'none',
-              borderRadius: '50px',
-              fontSize: '1.1rem',
+              fontSize: '1rem',
+              letterSpacing: '1px',
               cursor: 'pointer',
-              fontWeight: 'bold',
-              transition: 'transform 0.3s, box-shadow 0.3s',
-              boxShadow: '0 4px 15px rgba(0,0,0,0.2)'
+              transition: 'all 0.3s'
             }}
             onMouseOver={(e) => {
-              e.target.style.transform = 'scale(1.05)'
-              e.target.style.boxShadow = '0 6px 20px rgba(0,0,0,0.3)'
+              e.target.style.background = '#f0f0f0'
+              e.target.style.transform = 'translateY(-2px)'
             }}
             onMouseOut={(e) => {
-              e.target.style.transform = 'scale(1)'
-              e.target.style.boxShadow = '0 4px 15px rgba(0,0,0,0.2)'
+              e.target.style.background = '#fff'
+              e.target.style.transform = 'translateY(0)'
             }}
           >
-            Bestill time
+            BESTILL TIME NÅ
           </button>
         </div>
       </section>
 
-      {/* Om Oss Section */}
-      <section id="om-oss" style={{
+      {/* Om oss */}
+      <section style={{
         padding: '5rem 2rem',
-        background: '#f8f9fa'
+        background: '#fff'
       }}>
-        <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+        <div style={{ maxWidth: '900px', margin: '0 auto', textAlign: 'center' }}>
           <h2 style={{
             fontSize: '2.5rem',
-            marginBottom: '2.5rem',
-            textAlign: 'center',
-            color: '#2c3e50',
-            fontFamily: 'Georgia, serif'
+            marginBottom: '2rem',
+            fontWeight: '300',
+            letterSpacing: '2px',
+            color: '#1a1a1a'
+          }}>Om oss</h2>
+          <p style={{
+            fontSize: '1.1rem',
+            lineHeight: '1.8',
+            color: '#555',
+            fontWeight: '300'
           }}>
-            Om oss
-          </h2>
-          <div style={{
-            fontSize: '1.15rem',
-            lineHeight: '1.9',
-            color: '#34495e'
-          }}>
-            <p style={{ marginBottom: '1.5rem' }}>
-              Kom Inn Frisør AS er en profesjonell frisørsalong lokalisert i hjertet av Bergen, 
-              på Valkendorfsgaten 7. Med mange års erfaring og et brennende engasjement for 
-              hårstyling, tilbyr vi et bredt spekter av tjenester for hele familien.
-            </p>
-            <p style={{ marginBottom: '1.5rem' }}>
-              Våre dyktige frisører holder seg oppdatert på de nyeste trendene og teknikkene, 
-              samtidig som vi legger vekt på individuell tilpasning og personlig service. 
-              Vi bruker kun kvalitetsprodukter for å sikre best mulig resultat og en sunn 
-              hårhelse.
-            </p>
-            <p>
-              Hos oss møtes du av et hyggelig og profesjonelt team i trivelige lokaler midt 
-              i Bergen sentrum. Vi ser frem til å gi deg en fantastisk frisøropplevelse.
-            </p>
-          </div>
+            Kom Inn Frisør AS er en profesjonell frisørsalong lokalisert i hjertet av Bergen, på Valkendorfsgaten 7. Med mange års erfaring og et brennende engasjement for hårstyling, tilbyr vi et bredt spekter av tjenester for hele familien.
+          </p>
         </div>
       </section>
 
-      {/* Tjenester Section */}
+      {/* Tjenester med bilder */}
       <section id="tjenester" style={{
         padding: '5rem 2rem',
-        background: 'white'
+        background: '#f8f8f8'
       }}>
-        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+        <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
           <h2 style={{
             fontSize: '2.5rem',
             marginBottom: '3rem',
-            textAlign: 'center',
-            color: '#2c3e50',
-            fontFamily: 'Georgia, serif'
-          }}>
-            Våre tjenester
-          </h2>
+            fontWeight: '300',
+            letterSpacing: '2px',
+            color: '#1a1a1a',
+            textAlign: 'center'
+          }}>Våre tjenester</h2>
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
             gap: '2rem'
           }}>
-            {services.map((service, index) => (
-              <div key={index} style={{
-                padding: '2rem',
-                border: '1px solid #e0e0e0',
-                borderRadius: '12px',
-                textAlign: 'center',
-                transition: 'transform 0.3s, box-shadow 0.3s',
-                background: '#fafafa'
-              }}
-              onMouseOver={(e) => {
-                e.currentTarget.style.transform = 'translateY(-8px)'
-                e.currentTarget.style.boxShadow = '0 8px 20px rgba(0,0,0,0.1)'
-              }}
-              onMouseOut={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)'
-                e.currentTarget.style.boxShadow = 'none'
-              }}>
-                <h3 style={{
-                  fontSize: '1.4rem',
-                  color: '#2c3e50',
-                  marginBottom: '0.8rem'
-                }}>
-                  {service.name}
-                </h3>
-                <p style={{
-                  fontSize: '1.6rem',
-                  color: '#3498db',
-                  fontWeight: 'bold',
-                  marginBottom: '0.5rem'
-                }}>
-                  {service.price}
-                </p>
-                <p style={{
-                  fontSize: '0.95rem',
-                  color: '#7f8c8d',
-                  margin: 0
-                }}>
-                  {service.duration}
-                </p>
+            {services.map(service => (
+              <div
+                key={service.id}
+                style={{
+                  background: '#fff',
+                  overflow: 'hidden',
+                  transition: 'transform 0.3s',
+                  cursor: 'pointer',
+                  border: '1px solid #e0e0e0'
+                }}
+                onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-5px)'}
+                onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+              >
+                <img
+                  src={service.image}
+                  alt={service.name}
+                  style={{
+                    width: '100%',
+                    height: '250px',
+                    objectFit: 'cover'
+                  }}
+                />
+                <div style={{ padding: '1.5rem' }}>
+                  <h3 style={{
+                    fontSize: '1.5rem',
+                    marginBottom: '0.5rem',
+                    fontWeight: '300',
+                    letterSpacing: '1px'
+                  }}>{service.name}</h3>
+                  <p style={{
+                    color: '#666',
+                    marginBottom: '1rem',
+                    fontSize: '0.95rem'
+                  }}>{service.duration}</p>
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
+                  }}>
+                    <span style={{
+                      fontSize: '1.3rem',
+                      fontWeight: '300',
+                      color: '#1a1a1a'
+                    }}>{service.price}</span>
+                    <button
+                      onClick={() => handleBooking(service)}
+                      style={{
+                        background: '#1a1a1a',
+                        color: '#fff',
+                        padding: '0.7rem 1.5rem',
+                        border: 'none',
+                        fontSize: '0.9rem',
+                        letterSpacing: '1px',
+                        cursor: 'pointer',
+                        transition: 'background 0.3s'
+                      }}
+                      onMouseOver={(e) => e.target.style.background = '#333'}
+                      onMouseOut={(e) => e.target.style.background = '#1a1a1a'}
+                    >
+                      BESTILL
+                    </button>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Bestill Time Section - Improved */}
-      <section id="bestill" style={{
-        padding: '5rem 2rem',
-        background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)'
-      }}>
-        <div style={{ maxWidth: '700px', margin: '0 auto' }}>
-          <h2 style={{
-            fontSize: '2.5rem',
-            marginBottom: '1rem',
-            textAlign: 'center',
-            color: '#2c3e50',
-            fontFamily: 'Georgia, serif'
-          }}>
-            Bestill time
-          </h2>
-          <p style={{
-            textAlign: 'center',
-            color: '#555',
-            marginBottom: '2.5rem',
-            fontSize: '1.05rem'
-          }}>
-            Fyll ut skjemaet under, så kontakter vi deg for bekreftelse
-          </p>
-          <form onSubmit={handleSubmit} style={{
-            background: 'white',
+      {/* Booking Modal */}
+      {showBookingModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0,0,0,0.8)',
+          zIndex: 1000,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '2rem'
+        }}>
+          <div style={{
+            background: '#fff',
             padding: '3rem',
-            borderRadius: '16px',
-            boxShadow: '0 10px 40px rgba(0,0,0,0.1)'
+            maxWidth: '600px',
+            width: '100%',
+            maxHeight: '90vh',
+            overflowY: 'auto'
           }}>
-            <div style={{ marginBottom: '1.8rem' }}>
-              <label style={{
-                display: 'block',
-                marginBottom: '0.6rem',
-                color: '#2c3e50',
-                fontWeight: '600',
-                fontSize: '1rem'
-              }}>
-                Navn *
-              </label>
-              <input
-                type="text"
-                required
-                placeholder="Ditt fulle navn"
-                value={formData.name}
-                onChange={(e) => setFormData({...formData, name: e.target.value})}
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '2rem'
+            }}>
+              <h3 style={{
+                fontSize: '1.8rem',
+                fontWeight: '300',
+                letterSpacing: '1px',
+                margin: 0
+              }}>Bestill {selectedService?.name}</h3>
+              <button
+                onClick={() => setShowBookingModal(false)}
                 style={{
-                  width: '100%',
-                  padding: '1rem',
-                  border: '2px solid #e0e0e0',
-                  borderRadius: '8px',
-                  fontSize: '1rem',
-                  boxSizing: 'border-box',
-                  transition: 'border-color 0.3s'
+                  background: 'none',
+                  border: 'none',
+                  fontSize: '1.5rem',
+                  cursor: 'pointer',
+                  color: '#666'
                 }}
-                onFocus={(e) => e.target.style.borderColor = '#3498db'}
-                onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
-              />
-            </div>
-            
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.8rem' }}>
-              <div>
-                <label style={{
-                  display: 'block',
-                  marginBottom: '0.6rem',
-                  color: '#2c3e50',
-                  fontWeight: '600',
-                  fontSize: '1rem'
-                }}>
-                  Telefon *
-                </label>
-                <input
-                  type="tel"
-                  required
-                  placeholder="XXX XX XXX"
-                  value={formData.phone}
-                  onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                  style={{
-                    width: '100%',
-                    padding: '1rem',
-                    border: '2px solid #e0e0e0',
-                    borderRadius: '8px',
-                    fontSize: '1rem',
-                    boxSizing: 'border-box',
-                    transition: 'border-color 0.3s'
-                  }}
-                  onFocus={(e) => e.target.style.borderColor = '#3498db'}
-                  onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
-                />
-              </div>
-              
-              <div>
-                <label style={{
-                  display: 'block',
-                  marginBottom: '0.6rem',
-                  color: '#2c3e50',
-                  fontWeight: '600',
-                  fontSize: '1rem'
-                }}>
-                  E-post
-                </label>
-                <input
-                  type="email"
-                  placeholder="din@epost.no"
-                  value={formData.email}
-                  onChange={(e) => setFormData({...formData, email: e.target.value})}
-                  style={{
-                    width: '100%',
-                    padding: '1rem',
-                    border: '2px solid #e0e0e0',
-                    borderRadius: '8px',
-                    fontSize: '1rem',
-                    boxSizing: 'border-box',
-                    transition: 'border-color 0.3s'
-                  }}
-                  onFocus={(e) => e.target.style.borderColor = '#3498db'}
-                  onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
-                />
-              </div>
-            </div>
-            
-            <div style={{ marginBottom: '1.8rem' }}>
-              <label style={{
-                display: 'block',
-                marginBottom: '0.6rem',
-                color: '#2c3e50',
-                fontWeight: '600',
-                fontSize: '1rem'
-              }}>
-                Tjeneste *
-              </label>
-              <select
-                required
-                value={formData.service}
-                onChange={(e) => setFormData({...formData, service: e.target.value})}
-                style={{
-                  width: '100%',
-                  padding: '1rem',
-                  border: '2px solid #e0e0e0',
-                  borderRadius: '8px',
-                  fontSize: '1rem',
-                  boxSizing: 'border-box',
-                  transition: 'border-color 0.3s',
-                  background: 'white',
-                  cursor: 'pointer'
-                }}
-                onFocus={(e) => e.target.style.borderColor = '#3498db'}
-                onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
               >
-                <option value="">Velg tjeneste</option>
-                {services.map((service, index) => (
-                  <option key={index} value={service.name}>
-                    {service.name} - {service.price} ({service.duration})
-                  </option>
-                ))}
-              </select>
+                ✕
+              </button>
             </div>
-            
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.8rem' }}>
-              <div>
-                <label style={{
-                  display: 'block',
-                  marginBottom: '0.6rem',
-                  color: '#2c3e50',
-                  fontWeight: '600',
-                  fontSize: '1rem'
-                }}>
-                  Dato *
-                </label>
-                <input
-                  type="date"
-                  required
-                  value={formData.date}
-                  onChange={(e) => setFormData({...formData, date: e.target.value})}
-                  style={{
-                    width: '100%',
-                    padding: '1rem',
-                    border: '2px solid #e0e0e0',
-                    borderRadius: '8px',
-                    fontSize: '1rem',
-                    boxSizing: 'border-box',
-                    transition: 'border-color 0.3s'
-                  }}
-                  onFocus={(e) => e.target.style.borderColor = '#3498db'}
-                  onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
-                />
-              </div>
-              
-              <div>
-                <label style={{
-                  display: 'block',
-                  marginBottom: '0.6rem',
-                  color: '#2c3e50',
-                  fontWeight: '600',
-                  fontSize: '1rem'
-                }}>
-                  Tidspunkt *
-                </label>
-                <select
-                  required
-                  value={formData.time}
-                  onChange={(e) => setFormData({...formData, time: e.target.value})}
-                  style={{
-                    width: '100%',
-                    padding: '1rem',
-                    border: '2px solid #e0e0e0',
-                    borderRadius: '8px',
-                    fontSize: '1rem',
-                    boxSizing: 'border-box',
-                    transition: 'border-color 0.3s',
-                    background: 'white',
-                    cursor: 'pointer'
-                  }}
-                  onFocus={(e) => e.target.style.borderColor = '#3498db'}
-                  onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
-                >
-                  <option value="">Velg tidspunkt</option>
-                  <option value="09:00">09:00</option>
-                  <option value="10:00">10:00</option>
-                  <option value="11:00">11:00</option>
-                  <option value="12:00">12:00</option>
-                  <option value="13:00">13:00</option>
-                  <option value="14:00">14:00</option>
-                  <option value="15:00">15:00</option>
-                  <option value="16:00">16:00</option>
-                  <option value="17:00">17:00</option>
-                </select>
-              </div>
-            </div>
-            
+
+            <p style={{ marginBottom: '2rem', color: '#666' }}>
+              {selectedService?.duration} · {selectedService?.price}
+            </p>
+
             <div style={{ marginBottom: '2rem' }}>
               <label style={{
                 display: 'block',
-                marginBottom: '0.6rem',
-                color: '#2c3e50',
-                fontWeight: '600',
-                fontSize: '1rem'
-              }}>
-                Melding / Spesielle ønsker
-              </label>
-              <textarea
-                placeholder="Har du spesielle ønsker eller behov? La oss vite..."
-                value={formData.message}
-                onChange={(e) => setFormData({...formData, message: e.target.value})}
-                rows="4"
+                marginBottom: '0.5rem',
+                fontWeight: '500',
+                letterSpacing: '0.5px'
+              }}>Velg dato</label>
+              <input
+                type="date"
+                value={selectedDate || ''}
+                onChange={(e) => setSelectedDate(e.target.value)}
+                min={new Date().toISOString().split('T')[0]}
                 style={{
                   width: '100%',
-                  padding: '1rem',
-                  border: '2px solid #e0e0e0',
-                  borderRadius: '8px',
-                  fontSize: '1rem',
-                  boxSizing: 'border-box',
-                  transition: 'border-color 0.3s',
-                  fontFamily: 'inherit',
-                  resize: 'vertical'
+                  padding: '0.8rem',
+                  border: '1px solid #ddd',
+                  fontSize: '1rem'
                 }}
-                onFocus={(e) => e.target.style.borderColor = '#3498db'}
-                onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
               />
             </div>
-            
-            <button type="submit" style={{
-              width: '100%',
-              padding: '1.2rem',
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-              color: 'white',
-              border: 'none',
-              borderRadius: '50px',
-              fontSize: '1.15rem',
-              fontWeight: 'bold',
-              cursor: 'pointer',
-              transition: 'transform 0.3s, box-shadow 0.3s',
-              boxShadow: '0 4px 15px rgba(102, 126, 234, 0.4)'
-            }}
-            onMouseOver={(e) => {
-              e.target.style.transform = 'translateY(-2px)'
-              e.target.style.boxShadow = '0 6px 20px rgba(102, 126, 234, 0.6)'
-            }}
-            onMouseOut={(e) => {
-              e.target.style.transform = 'translateY(0)'
-              e.target.style.boxShadow = '0 4px 15px rgba(102, 126, 234, 0.4)'
-            }}>
-              Send bestilling
-            </button>
-          </form>
-        </div>
-      </section>
 
-      {/* Anmeldelser Section */}
-      <section id="anmeldelser" style={{
+            {selectedDate && (
+              <div style={{ marginBottom: '2rem' }}>
+                <label style={{
+                  display: 'block',
+                  marginBottom: '1rem',
+                  fontWeight: '500',
+                  letterSpacing: '0.5px'
+                }}>Velg tidspunkt</label>
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(4, 1fr)',
+                  gap: '0.5rem'
+                }}>
+                  {timeSlots.map(slot => (
+                    <button
+                      key={slot.time}
+                      onClick={() => slot.available && setSelectedTime(slot.time)}
+                      disabled={!slot.available}
+                      style={{
+                        padding: '0.8rem',
+                        border: selectedTime === slot.time ? '2px solid #1a1a1a' : '1px solid #ddd',
+                        background: slot.available ? '#fff' : '#f5f5f5',
+                        color: slot.available ? '#1a1a1a' : '#ccc',
+                        cursor: slot.available ? 'pointer' : 'not-allowed',
+                        fontSize: '0.9rem',
+                        transition: 'all 0.2s'
+                      }}
+                    >
+                      {slot.time}
+                    </button>
+                  ))}
+                </div>
+                <p style={{
+                  marginTop: '1rem',
+                  fontSize: '0.85rem',
+                  color: '#666'
+                }}>
+                  Ledige tider er hvite, opptatte er gråe
+                </p>
+              </div>
+            )}
+
+            {selectedTime && (
+              <div style={{ marginBottom: '2rem' }}>
+                <label style={{
+                  display: 'block',
+                  marginBottom: '0.5rem',
+                  fontWeight: '500',
+                  letterSpacing: '0.5px'
+                }}>Ditt navn</label>
+                <input
+                  type="text"
+                  placeholder="Navn"
+                  style={{
+                    width: '100%',
+                    padding: '0.8rem',
+                    border: '1px solid #ddd',
+                    fontSize: '1rem',
+                    marginBottom: '1rem'
+                  }}
+                />
+                <label style={{
+                  display: 'block',
+                  marginBottom: '0.5rem',
+                  fontWeight: '500',
+                  letterSpacing: '0.5px'
+                }}>Telefon</label>
+                <input
+                  type="tel"
+                  placeholder="Telefonnummer"
+                  style={{
+                    width: '100%',
+                    padding: '0.8rem',
+                    border: '1px solid #ddd',
+                    fontSize: '1rem'
+                  }}
+                />
+              </div>
+            )}
+
+            <button
+              onClick={confirmBooking}
+              disabled={!selectedDate || !selectedTime}
+              style={{
+                width: '100%',
+                padding: '1rem',
+                background: selectedDate && selectedTime ? '#1a1a1a' : '#ccc',
+                color: '#fff',
+                border: 'none',
+                fontSize: '1rem',
+                letterSpacing: '1px',
+                cursor: selectedDate && selectedTime ? 'pointer' : 'not-allowed',
+                transition: 'background 0.3s'
+              }}
+            >
+              BEKREFT BESTILLING
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Anmeldelser */}
+      <section style={{
         padding: '5rem 2rem',
-        background: 'white'
+        background: '#fff'
       }}>
-        <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+        <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
           <h2 style={{
             fontSize: '2.5rem',
             marginBottom: '3rem',
-            textAlign: 'center',
-            color: '#2c3e50',
-            fontFamily: 'Georgia, serif'
-          }}>
-            Hva våre kunder sier
-          </h2>
+            fontWeight: '300',
+            letterSpacing: '2px',
+            color: '#1a1a1a',
+            textAlign: 'center'
+          }}>Hva våre kunder sier</h2>
           <div style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
             gap: '2rem'
           }}>
-            {reviews.map((review, index) => (
-              <div key={index} style={{
-                background: '#f8f9fa',
-                padding: '2.5rem',
-                borderRadius: '12px',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
-                transition: 'transform 0.3s'
-              }}
-              onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-5px)'}
-              onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}>
-                <div style={{
-                  color: '#f39c12',
-                  fontSize: '1.8rem',
-                  marginBottom: '1.2rem'
-                }}>
-                  ★★★★★
-                </div>
+            {[
+              { text: 'Fantastisk service og resultat! Anbefales på det sterkeste.', author: 'Fornøyd kunde' },
+              { text: 'Veldig dyktige frisører. Kommer alltid tilbake hit.', author: 'Fornøyd kunde' },
+              { text: 'Beste frisørsalongen i Bergen! Hyggelig personale.', author: 'Fornøyd kunde' }
+            ].map((review, i) => (
+              <div
+                key={i}
+                style={{
+                  padding: '2rem',
+                  background: '#f8f8f8',
+                  border: '1px solid #e0e0e0'
+                }}
+              >
                 <p style={{
-                  color: '#34495e',
                   fontSize: '1.1rem',
-                  lineHeight: '1.7',
-                  marginBottom: '1.5rem',
-                  fontStyle: 'italic'
-                }}>
-                  &quot;{review.text}&quot;
-                </p>
+                  fontStyle: 'italic',
+                  marginBottom: '1rem',
+                  color: '#333',
+                  lineHeight: '1.6'
+                }}>"{review.text}"</p>
                 <p style={{
-                  color: '#7f8c8d',
-                  fontWeight: '600',
-                  margin: 0
-                }}>
-                  - {review.author}
-                </p>
+                  color: '#666',
+                  fontSize: '0.9rem',
+                  fontWeight: '500'
+                }}>- {review.author}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Kontakt Section */}
+      {/* Kontakt */}
       <section id="kontakt" style={{
         padding: '5rem 2rem',
-        background: '#2c3e50',
-        color: 'white'
+        background: '#1a1a1a',
+        color: '#fff'
       }}>
-        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+        <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
           <h2 style={{
             fontSize: '2.5rem',
             marginBottom: '3rem',
-            textAlign: 'center',
-            fontFamily: 'Georgia, serif'
-          }}>
-            Kontakt oss
-          </h2>
+            fontWeight: '300',
+            letterSpacing: '2px',
+            textAlign: 'center'
+          }}>Kontakt oss</h2>
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-            gap: '2.5rem',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            gap: '3rem',
             marginBottom: '3rem'
           }}>
             <div>
-              <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem', color: '#3498db' }}>Adresse</h3>
-              <p style={{ lineHeight: '1.8', fontSize: '1.1rem' }}>
+              <h3 style={{
+                fontSize: '1.3rem',
+                marginBottom: '1rem',
+                fontWeight: '300',
+                letterSpacing: '1px',
+                color: '#ccc'
+              }}>Adresse</h3>
+              <p style={{ lineHeight: '1.6', color: '#ddd' }}>
                 Valkendorfsgaten 7<br />
                 5012 Bergen
               </p>
             </div>
             <div>
-              <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem', color: '#3498db' }}>Åpningstider</h3>
-              <p style={{ lineHeight: '1.8', fontSize: '1.1rem' }}>
+              <h3 style={{
+                fontSize: '1.3rem',
+                marginBottom: '1rem',
+                fontWeight: '300',
+                letterSpacing: '1px',
+                color: '#ccc'
+              }}>Åpningstider</h3>
+              <p style={{ lineHeight: '1.6', color: '#ddd' }}>
                 Mandag - Fredag: 09:00 - 18:00<br />
                 Lørdag: 09:00 - 15:00<br />
                 Søndag: Stengt
               </p>
             </div>
             <div>
-              <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem', color: '#3498db' }}>Kontakt</h3>
-              <p style={{ lineHeight: '1.8', fontSize: '1.1rem' }}>
+              <h3 style={{
+                fontSize: '1.3rem',
+                marginBottom: '1rem',
+                fontWeight: '300',
+                letterSpacing: '1px',
+                color: '#ccc'
+              }}>Kontakt</h3>
+              <p style={{ lineHeight: '1.6', color: '#ddd' }}>
                 Telefon: 55 55 55 55<br />
                 E-post: post@kominnfrisor.no
               </p>
             </div>
           </div>
-          <div style={{
-            width: '100%',
-            height: '450px',
-            borderRadius: '12px',
-            overflow: 'hidden',
-            boxShadow: '0 8px 24px rgba(0,0,0,0.3)'
-          }}>
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1973.8586094722742!2d5.323515!3d60.393056!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x463cf9579c57c1a3%3A0x9a95c0d53e4c7f0d!2sValkendorfsgaten%207%2C%205012%20Bergen!5e0!3m2!1sno!2sno!4v1234567890"
-              width="100%"
-              height="450"
-              style={{ border: 0 }}
-              allowFullScreen=""
-              loading="lazy"
-            ></iframe>
-          </div>
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1973.8586094722742d5.323515!3d60.393056!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNjDCsDIzJzM1LjAiTiA1wrAxOSczMC42IkU!5e0!3m2!1sno!2sno!4v1234567890"
+            width="100%"
+            height="400"
+            style={{ border: 0 }}
+            allowFullScreen=""
+            loading="lazy"
+          />
         </div>
       </section>
-
-      <style jsx global>{`
-        * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-        }
-        body {
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-        }
-        html {
-          scroll-behavior: auto;
-        }
-      `}</style>
     </>
   )
 }
