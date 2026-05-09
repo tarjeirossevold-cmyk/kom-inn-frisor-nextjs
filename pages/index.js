@@ -11,7 +11,7 @@ export default function Home() {
     { id: 1, name: 'Dameklipp', price: '550,-', duration: '45 min', image: 'https://images.unsplash.com/photo-1562322140-8baeececf3df?w=600' },
     { id: 2, name: 'Herreklipp', price: '450,-', duration: '30 min', image: 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600' },
     { id: 3, name: 'Barneklipp', price: '350,-', duration: '30 min', image: 'https://images.unsplash.com/photo-1632345031435-8727f6897d53?w=600' },
-    { id: 4, name: 'Farge - hel', price: 'fra 750,-', duration: '90 min', image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600' },
+    { id: 4, name: 'Farge – hel', price: 'fra 750,-', duration: '90 min', image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600' },
     { id: 5, name: 'Balayage', price: 'fra 1200,-', duration: '150 min', image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600' },
     { id: 6, name: 'Permanent', price: 'fra 900,-', duration: '120 min', image: 'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=600' }
   ]
@@ -49,10 +49,17 @@ export default function Home() {
     }
   }
 
+  const jumpToSection = (sectionId) => {
+    const element = document.getElementById(sectionId)
+    if (element) {
+      element.scrollIntoView({ behavior: 'auto', block: 'start' })
+    }
+  }
+
   return (
     <>
       <Head>
-        <title>Kom Inn Frisør AS - Bergen</title>
+        <title>Kom Inn Frisør AS – Bergen</title>
         <meta name="description" content="Profesjonell frisørsalong i Bergen sentrum - Valkendorfsgaten 7" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -75,7 +82,7 @@ export default function Home() {
         DEMO
       </div>
 
-      {/* Navigation - NO AUTO SCROLL */}
+      {/* Navigation */}
       <nav style={{
         position: 'sticky',
         top: 0,
@@ -100,22 +107,30 @@ export default function Home() {
             letterSpacing: '2px'
           }}>KOM INN FRISØR</h1>
           <div style={{ display: 'flex', gap: '2rem' }}>
-            {['Hjem', 'Tjenester', 'Bestill', 'Kontakt'].map(item => (
-              <a
-                key={item}
-                href={`#${item.toLowerCase()}`}
+            {[
+              { label: 'Hjem', target: 'hjem' },
+              { label: 'Tjenester', target: 'tjenester' },
+              { label: 'Bestill', target: 'tjenester' },
+              { label: 'Kontakt', target: 'kontakt' }
+            ].map(item => (
+              <button
+                key={item.label}
+                onClick={() => jumpToSection(item.target)}
                 style={{
+                  background: 'none',
+                  border: 'none',
                   color: '#ddd',
-                  textDecoration: 'none',
                   fontSize: '0.95rem',
                   letterSpacing: '1px',
-                  transition: 'color 0.2s'
+                  cursor: 'pointer',
+                  transition: 'color 0.2s',
+                  padding: 0
                 }}
                 onMouseOver={(e) => e.target.style.color = '#fff'}
                 onMouseOut={(e) => e.target.style.color = '#ddd'}
               >
-                {item}
-              </a>
+                {item.label}
+              </button>
             ))}
           </div>
         </div>
@@ -141,7 +156,7 @@ export default function Home() {
             fontWeight: '300'
           }}>Din profesjonelle frisørsalong i Bergen sentrum</p>
           <button
-            onClick={() => document.getElementById('bestill').scrollIntoView()}
+            onClick={() => jumpToSection('tjenester')}
             style={{
               background: '#fff',
               color: '#1a1a1a',
@@ -565,7 +580,7 @@ export default function Home() {
             </div>
           </div>
           <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1973.8586094722742d5.323515!3d60.393056!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNjDCsDIzJzM1LjAiTiA1wrAxOSczMC42IkU!5e0!3m2!1sno!2sno!4v1234567890"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1973.8568558635984!2d5.321956515769714!3d60.39273918191986!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x463cf951b7c46fa7%3A0x75f3b5f5e8a7c29a!2sValkendorfsgaten%207%2C%205012%20Bergen!5e0!3m2!1sno!2sno!4v1234567890123"
             width="100%"
             height="400"
             style={{ border: 0 }}
@@ -576,4 +591,4 @@ export default function Home() {
       </section>
     </>
   )
-} 
+}
